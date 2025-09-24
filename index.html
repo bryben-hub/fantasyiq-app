@@ -508,7 +508,7 @@
         }
 
         // Search player
-        async function analyzeDemoTrade() {
+       async function analyzeDemoTrade() {
     const resultDiv = document.getElementById('tradeResult');
     resultDiv.innerHTML = '<div style="text-align: center; padding: 2rem;">🔄 Analyzing trade...</div>';
 
@@ -518,9 +518,9 @@
         
         console.log('Trade data received:', data);
 
-        // Handle different response formats
-        const giveItems = data.trade_details?.give || ['Travis Kelce', '2025 1st Round Pick'];
-        const receiveItems = data.trade_details?.receive || ['Ja\'Marr Chase'];
+        // Use the correct property names from your backend
+        const giveItems = data.trade_details?.give_players || ['Travis Kelce', '2025 1st Round Pick'];
+        const receiveItems = data.trade_details?.receive_players || ['Ja\'Marr Chase'];
 
         resultDiv.innerHTML = `
             <div class="trade-result ${data.recommendation.toLowerCase()}">
@@ -550,13 +550,18 @@
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
                         <div>Current Value: <strong>${data.value_analysis?.current_value_difference || '+15%'}</strong></div>
-                        <div>Long-term: <strong>${data.value_analysis?.long_term_outlook || 'Positive'}</strong></div>
-                        <div>Risk: <strong>${data.value_analysis?.risk_level || 'Low'}</strong></div>
+                        <div>2027 Projection: <strong>${data.value_analysis?.projected_2027_difference || '+35%'}</strong></div>
+                        <div>Risk Level: <strong>${data.value_analysis?.risk_level || 'Low'}</strong></div>
+                        <div>Age Advantage: <strong>${data.value_analysis?.age_advantage || 'Chase: 24 vs Kelce: 35'}</strong></div>
                     </div>
                 </div>
             </div>
         `;
     } catch (error) {
+        console.error('Error:', error);
+        resultDiv.innerHTML = '<div class="error">❌ Connection error. Please try again.</div>';
+    }
+}
         console.error('Error:', error);
         resultDiv.innerHTML = `
             <div class="trade-result accept">
