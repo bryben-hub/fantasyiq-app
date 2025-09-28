@@ -237,6 +237,11 @@
             background: #0056b3;
         }
 
+        .search-btn:disabled, .demo-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .result {
             border: 2px solid #e9ecef;
             border-radius: 10px;
@@ -322,6 +327,11 @@
             margin-bottom: 1.5rem;
         }
 
+        .trade-side h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
         .trade-side ul {
             list-style: none;
         }
@@ -364,6 +374,20 @@
             padding: 1rem;
             border-radius: 5px;
             border: 1px solid #fed7d7;
+            margin-top: 1rem;
+        }
+
+        .demo-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .value-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
             margin-top: 1rem;
         }
 
@@ -448,218 +472,4 @@
                     <p class="card-subtitle">Get multi-year projections and dynasty recommendations</p>
                     
                     <div class="search-section">
-                        <input type="text" id="playerSearch" class="search-input" 
-                               placeholder="Enter player name (e.g., Josh Allen, Ja'Marr Chase, Breece Hall)">
-                        <button class="search-btn" onclick="searchPlayer()">Analyze</button>
-                    </div>
-
-                    <div id="playerResult"></div>
-                </div>
-
-                <!-- Trade Analyzer -->
-                <div class="card">
-                    <h2 class="card-title">⚖️ AI Trade Analyzer</h2>
-                    <p class="card-subtitle">Smart dynasty trade recommendations</p>
-                    
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
-                        <p><strong>Demo Trade:</strong> Travis Kelce + 2025 1st → Ja'Marr Chase</p>
-                        <button class="demo-btn" onclick="analyzeDemoTrade()">Analyze Demo Trade</button>
-                    </div>
-
-                    <div id="tradeResult"></div>
-                </div>
-
-                <!-- Upgrade CTA -->
-                <div class="upgrade-card">
-                    <h2>🚀 Unlock Full AI Power</h2>
-                    <p>Get unlimited analysis, buy/sell alerts, and advanced dynasty tools</p>
-                    <div style="margin: 1rem 0;">
-                        <div>✅ Unlimited player analysis</div>
-                        <div>✅ Custom trade scenarios</div>
-                        <div>✅ Weekly buy/sell alerts</div>
-                        <div>✅ League sync integration</div>
-                    </div>
-                    <button class="upgrade-btn-large" onclick="alert('Stripe integration coming soon!')">
-                        Start 7-Day Free Trial - $29.99/month
-                    </button>
-                    <p style="font-size: 0.9rem; opacity: 0.8;">Cancel anytime • No commitment</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Your backend API
-        const API_BASE = 'https://web-production-185fa.up.railway.app';
-
-        // Show/hide sections
-        function showApp() {
-            document.getElementById('landing').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }
-
-        function handleSignup(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('.email-input').value;
-            localStorage.setItem('fantasyiq_email', email);
-            alert('Welcome! Redirecting to app...');
-            showApp();
-        }
-
-        // Search player
-       async function analyzeDemoTrade() {
-    const resultDiv = document.getElementById('tradeResult');
-    resultDiv.innerHTML = '<div style="text-align: center; padding: 2rem;">🔄 Analyzing trade...</div>';
-
-    try {
-        const response = await fetch(`${API_BASE}/demo/trade`);
-        const data = await response.json();
-        
-        console.log('Trade data received:', data);
-
-        // Use the correct property names from your backend
-        const giveItems = data.trade_details?.give_players || ['Travis Kelce', '2025 1st Round Pick'];
-        const receiveItems = data.trade_details?.receive_players || ['Ja\'Marr Chase'];
-
-        resultDiv.innerHTML = `
-            <div class="trade-result ${data.recommendation.toLowerCase()}">
-                <div class="trade-header">
-                    <h3>AI Recommendation: ${data.recommendation}</h3>
-                    <div>Confidence: ${data.confidence}%</div>
-                </div>
-                
-                <div class="trade-details">
-                    <div class="trade-side">
-                        <h4>You Give:</h4>
-                        <ul>
-                            ${giveItems.map(player => `<li>${player}</li>`).join('')}
-                        </ul>
-                    </div>
-                    <div class="trade-side">
-                        <h4>You Receive:</h4>
-                        <ul>
-                            ${receiveItems.map(player => `<li>${player}</li>`).join('')}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="reasoning">
-                    <h4>Analysis:</h4>
-                    <p>${data.reasoning}</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                        <div>Current Value: <strong>${data.value_analysis?.current_value_difference || '+15%'}</strong></div>
-                        <div>2027 Projection: <strong>${data.value_analysis?.projected_2027_difference || '+35%'}</strong></div>
-                        <div>Risk Level: <strong>${data.value_analysis?.risk_level || 'Low'}</strong></div>
-                        <div>Age Advantage: <strong>${data.value_analysis?.age_advantage || 'Chase: 24 vs Kelce: 35'}</strong></div>
-                    </div>
-                </div>
-            </div>
-        `;
-    } catch (error) {
-        console.error('Error:', error);
-        resultDiv.innerHTML = '<div class="error">❌ Connection error. Please try again.</div>';
-    }
-}
-        console.error('Error:', error);
-        resultDiv.innerHTML = `
-            <div class="trade-result accept">
-                <div class="trade-header">
-                    <h3>AI Recommendation: ACCEPT</h3>
-                    <div>Confidence: 87%</div>
-                </div>
-                
-                <div class="trade-details">
-                    <div class="trade-side">
-                        <h4>You Give:</h4>
-                        <ul>
-                            <li>Travis Kelce</li>
-                            <li>2025 1st Round Pick</li>
-                        </ul>
-                    </div>
-                    <div class="trade-side">
-                        <h4>You Receive:</h4>
-                        <ul>
-                            <li>Ja'Marr Chase</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="reasoning">
-                    <h4>Analysis:</h4>
-                    <p>Ja'Marr Chase's youth (24) and elite WR1 ceiling outweigh Kelce's aging curve (35). Chase provides 5+ years of WR1 production vs. Kelce's declining value.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                        <div>Current Value: <strong>+15%</strong></div>
-                        <div>Long-term: <strong>Positive</strong></div>
-                        <div>Risk: <strong>Low</strong></div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-}
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.innerHTML = '<div class="error">❌ Connection error. Please try again.</div>';
-            }
-        }
-
-        // Demo trade analysis
-        async function analyzeDemoTrade() {
-            const resultDiv = document.getElementById('tradeResult');
-            resultDiv.innerHTML = '<div style="text-align: center; padding: 2rem;">🔄 Analyzing trade...</div>';
-
-            try {
-                const response = await fetch(`${API_BASE}/demo/trade`);
-                const data = await response.json();
-
-                resultDiv.innerHTML = `
-                    <div class="trade-result ${data.recommendation.toLowerCase()}">
-                        <div class="trade-header">
-                            <h3>AI Recommendation: ${data.recommendation}</h3>
-                            <div>Confidence: ${data.confidence}%</div>
-                        </div>
-                        
-                        <div class="trade-details">
-                            <div class="trade-side">
-                                <h4>You Give:</h4>
-                                <ul>
-                                    ${data.trade_details.give.map(player => `<li>${player}</li>`).join('')}
-                                </ul>
-                            </div>
-                            <div class="trade-side">
-                                <h4>You Receive:</h4>
-                                <ul>
-                                    ${data.trade_details.receive.map(player => `<li>${player}</li>`).join('')}
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="reasoning">
-                            <h4>Analysis:</h4>
-                            <p>${data.reasoning}</p>
-                            
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                                <div>Current Value: <strong>${data.value_analysis?.current_value_difference || 'N/A'}</strong></div>
-                                <div>Long-term: <strong>${data.value_analysis?.long_term_outlook || 'N/A'}</strong></div>
-                                <div>Risk: <strong>${data.value_analysis?.risk_level || 'N/A'}</strong></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('Error:', error);
-                resultDiv.innerHTML = '<div class="error">❌ Connection error. Please try again.</div>';
-            }
-        }
-
-        // Test API connection on load
-        fetch(`${API_BASE}/`)
-            .then(response => response.json())
-            .then(data => console.log('✅ API Connected:', data))
-            .catch(error => console.error('❌ API Error:', error));
-    </script>
-</body>
-</html>
+                        <input type="
